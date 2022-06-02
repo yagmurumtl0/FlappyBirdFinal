@@ -8,10 +8,10 @@ pygame.mixer.init()
 # Oyunun kare hizinin ayarlanmasi(Alperen Cevik)
 clock = pygame.time.Clock()
 fps = 60
-#
+# pencere boyutunun piksel olarak belirlenmesi (yagmur umutlu)
 screen_width = 864
 screen_height = 936
-#
+# girilen piksellerin pencereye tanimlanmasi ve pencerenin isminin atanmasi (yagmur umutlu)
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption('Flappy Bird by Alperen,Yagmur, Emre')
 
@@ -78,7 +78,7 @@ def reset_game():
 	score = 0
 	return score
 
-# Kus sinifinin tanimi, ozelliklerin ve animasyonlarin olusturulmasi
+# Kus sinifinin tanimi, ozelliklerin ve animasyonlarin olusturulmasi (yagmur umutlu)
 class Bird(pygame.sprite.Sprite):
 
 	def __init__(self, x, y):
@@ -94,6 +94,16 @@ class Bird(pygame.sprite.Sprite):
 		self.rect.center = [x, y]
 		self.vel = 0
 		self.clicked = False
+
+		#animasyon gorsellerini tutacak self.images isimli listeyi olusturur (yagmur umutlu)
+
+		#index , counter , velocity ve clicked'in baslangic degerleriyle tanimlanmasi (yagmur umutlu)
+
+
+		#animasyonun for dongusuyle ayarlanmasi (yagmur umutlu)
+
+	    #koordinat girisi icin hazirlik (yagmur umutlu)
+
 	#Eger Kus ucuyorsa vel degerini 0.5 artirarak asagi dusmesini yani yercekimini saglar(Alperen cevik)
 	def update(self):
 
@@ -104,6 +114,8 @@ class Bird(pygame.sprite.Sprite):
 				self.vel = 8
 			if self.rect.bottom < 768:
 				self.rect.y += int(self.vel)
+				
+				#maximum hizi 8 , vel degerine gore yukari asagi hareketi saglayan komut satiri (yagmur umutlu)
 
 		if game_over == False:
 			#jump
@@ -113,6 +125,9 @@ class Bird(pygame.sprite.Sprite):
 				self.vel = -10
 			if pygame.mouse.get_pressed()[0] == 0:
 				self.clicked = False
+				
+				#eger yanmadiysak mause basilisini algılar, clicked degerini gunceller (yagmur umutlu)
+				#kusun vel degerini degistirerek ziplamayi saglar ve ziplama sesini oynatir (yagmur umutlu)
 
 			#Gorsellerin belirli zaman araliklariyla listeye eklenip cikarilmasiyla animasyonun olusmasi(Alperen cevik)
 
@@ -126,12 +141,17 @@ class Bird(pygame.sprite.Sprite):
 					self.index = 0
 				self.image = self.images[self.index]
 
+				
+
 
 			#kusun kafasinin yukari asagi bakmasini saglar(Alperen Cevik)
 			self.image = pygame.transform.rotate(self.images[self.index], self.vel * -2)
 		else:
 			#eger yandiysak kusun kafasinin yere bakmasini saglar
 			self.image = pygame.transform.rotate(self.images[self.index], -90)
+
+			#eger yanmadiysak kusun vel degerine gore kafasinin yukari veya asagi bakmasini saglar (yagmur umutlu)
+			
 
 
 # Borularin cok sayida spawn edilmesi icin sinif olarak olusturulmasi ve ayarlari(Alperen Cevik)
@@ -154,6 +174,9 @@ class Pipe(pygame.sprite.Sprite):
 		self.rect.x -= scroll_speed
 		if self.rect.right < 0:
 			self.kill()
+
+			#self.image ile boruya gorsellik saglar (yagmur umutlu)
+		
 
 
 # Kullanilacak butonun sinif ayarlari ve ozellikleri(Alperen Cevik)
@@ -178,6 +201,8 @@ class Button():
 		screen.blit(self.image, (self.rect.x, self.rect.y))
 
 		return action
+
+	
 
 
 # Olusturdugumuz siniflar turunden yeni objeler olusturma ozellik verme ve gruplandirma(Alperen Cevik)
@@ -227,6 +252,11 @@ while run:
 	if pygame.mouse.get_pressed()[0] == 0 and flying == False and game_over == False:
 		draw_text(str(start_text), font, white, 150, 300)
 		screen.blit(leftclick, ( (screen_width / 2) + 50 , (screen_height / 2) - 80 ))
+
+		#screen.blit fonksiyonu ile arka planin, yer yuzunun, baslangic ekranindaki yazi ve resimlerin, menu resimleri ve tesxtleri vb.seylerin cizdirilmesi (yagmur umutlu)
+		#draw_text ile yazi yazdirilmasi (yagmur umutlu)
+		#kusun borunun en sol koordinati ile en sag koordinati arasindaki gecis kontrol edilerek skor kazanma isleminin yapilmasi (yagmur umutlu)
+		#eger mouse basili degilse, kus halihazirda ucmuyorsa ve yanmadiysak baslangic ekraninin olusturulmasi (yagmur umutlu)
 
 
 
