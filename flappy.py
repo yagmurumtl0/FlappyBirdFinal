@@ -2,20 +2,20 @@ import pygame
 from pygame.locals import *
 import random
 import os
-
+# pygame'e ait genel ve ses icin baslatma fonksiyonlari(Alperen cevik)
 pygame.init()
 pygame.mixer.init()
-
+# Oyunun kare hizinin ayarlanmasi(Alperen Cevik)
 clock = pygame.time.Clock()
 fps = 60
-
+#
 screen_width = 864
 screen_height = 936
-
+#
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption('Flappy Bird by Alperen,Yagmur, Emre')
 
-#define font
+# Yazi tiplerinin ve boyutlarinin ayarlanmasi(Alperen Cevik)
 font = pygame.font.SysFont('Impact', 60)
 text_font = pygame.font.SysFont('Impact', 42)
 menu_font = pygame.font.SysFont('Impact', 32)
@@ -27,17 +27,12 @@ coral = (255, 105, 105)
 orange = (255, 105, 30)
 gray = (119, 136, 153)
 
-#define game variables
+#// oyun degiskenlerini tanimlama(Alperen Cevik)
 flying = False
 game_over = False
 score = 0
 death_count = 0
 death_count_text = "Death Count:"
-
-savefile = open('saves/data.txt','r')
-high_score = int(savefile.read())
-savefile.close()
-
 score_text = "Score :"
 best_text = "Best :"
 start_text = "Click Anywhere to Start"
@@ -48,7 +43,12 @@ ground_scroll = 0
 last_pipe = pygame.time.get_ticks() - pipe_frequency
 pass_pipe = False
 
-#define sound folder
+# En yuksek skorumuzun kaydedilen kayit dosyasindan okunmasi(Alperen Cevik)
+savefile = open('saves/data.txt','r')
+high_score = int(savefile.read())
+savefile.close()
+
+# Ses klasorunu ve icerdigi ses dosyalarini tanimlama(Alperen Cevik)
 s = 'sound'
 
 rst_snd = pygame.mixer.Sound(os.path.join(s, 'reset.wav'))
@@ -57,7 +57,7 @@ hscore_snd = pygame.mixer.Sound(os.path.join(s, 'highscore.mp3'))
 death_snd = pygame.mixer.Sound(os.path.join(s, 'death.wav'))
 
 
-#load images
+#Resimlerin yuklenmesi(Alperen Cevik)
 bg = pygame.image.load('img/bg.png')
 ground_img = pygame.image.load('img/ground.png')
 button_img = pygame.image.load('img/restart.png')
@@ -70,7 +70,7 @@ leftclick = pygame.image.load('img/left2.png')
 def draw_text(text, font, text_col, x, y):
 	img = font.render(text, True, text_col)
 	screen.blit(img, (x, y))
-
+# Oyunu bastan baslatmak icin gereken sifirlama komutlari(Alperen Cevik)
 def reset_game():
 	pipe_group.empty()
 	flappy.rect.x = 100
@@ -78,7 +78,7 @@ def reset_game():
 	score = 0
 	return score
 
-
+# Kus sinifinin tanimi, ozelliklerin ve animasyonlarin olusturulmasi
 class Bird(pygame.sprite.Sprite):
 
 	def __init__(self, x, y):
@@ -94,7 +94,7 @@ class Bird(pygame.sprite.Sprite):
 		self.rect.center = [x, y]
 		self.vel = 0
 		self.clicked = False
-
+	#Eger Kus ucuyorsa vel degerini 0.5 artirarak asagi dusmesini yani yercekimini saglar(Alperen cevik)
 	def update(self):
 
 		if flying == True:
@@ -114,7 +114,8 @@ class Bird(pygame.sprite.Sprite):
 			if pygame.mouse.get_pressed()[0] == 0:
 				self.clicked = False
 
-			#handle the animation
+			#Gorsellerin belirli zaman araliklariyla listeye eklenip cikarilmasiyla animasyonun olusmasi(Alperen cevik)
+
 			flap_cooldown = 5
 			self.counter += 1
 			
@@ -126,36 +127,36 @@ class Bird(pygame.sprite.Sprite):
 				self.image = self.images[self.index]
 
 
-			#rotate the bird
+			#kusun kafasinin yukari asagi bakmasini saglar(Alperen Cevik)
 			self.image = pygame.transform.rotate(self.images[self.index], self.vel * -2)
 		else:
-			#point the bird at the ground
+			#eger yandiysak kusun kafasinin yere bakmasini saglar
 			self.image = pygame.transform.rotate(self.images[self.index], -90)
 
 
-
+# Borularin cok sayida spawn edilmesi icin sinif olarak olusturulmasi ve ayarlari(Alperen Cevik)
 class Pipe(pygame.sprite.Sprite):
 
 	def __init__(self, x, y, position):
 		pygame.sprite.Sprite.__init__(self)
 		self.image = pygame.image.load("img/pipe.png")
 		self.rect = self.image.get_rect()
-		#position variable determines if the pipe is coming from the bottom or top
-		#position 1 is from the top, -1 is from the bottom
+		
+		#pozisyon 1 ise boruyu yukaridan -1 ise asagidan spawn eder(Alperen Cevik)
 		if position == 1:
 			self.image = pygame.transform.flip(self.image, False, True)
 			self.rect.bottomleft = [x, y - int(pipe_gap / 2)]
 		elif position == -1:
 			self.rect.topleft = [x, y + int(pipe_gap / 2)]
 
-
+	#update konksiyonu ile ekran hizina gore yeni boru eklenir ve gecilenler silinir(Alperen Cevik)
 	def update(self):
 		self.rect.x -= scroll_speed
 		if self.rect.right < 0:
 			self.kill()
 
 
-
+# Kullanilacak butonun sinif ayarlari ve ozellikleri(Alperen Cevik)
 class Button():
 	def __init__(self, x, y, image):
 		self.image = image
@@ -165,21 +166,21 @@ class Button():
 	def draw(self):
 		action = False
 
-		#get mouse position
+		#pos degiskeni ile mousenin lokasyonunun atanmasi(Alperen Cevik)
 		pos = pygame.mouse.get_pos()
 
-		#check mouseover and clicked conditions
+		#Collidepoint fonksiyonu ile mouse butonun uzerinde mi kontrol edilir(Alperen Cevik)
 		if self.rect.collidepoint(pos):
 			if pygame.mouse.get_pressed()[0] == 1:
 				action = True
 
-		#draw button
+		#Butonu cizdirir(Alperen Cevik)
 		screen.blit(self.image, (self.rect.x, self.rect.y))
 
 		return action
 
 
-
+# Olusturdugumuz siniflar turunden yeni objeler olusturma ozellik verme ve gruplandirma(Alperen Cevik)
 pipe_group = pygame.sprite.Group()
 bird_group = pygame.sprite.Group()
 
@@ -187,9 +188,10 @@ flappy = Bird(100, int(screen_height / 2))
 
 bird_group.add(flappy)
 
-#create restart button instance
+## Restart butonunun olusturulmasi(Alperen Cevik)
 button = Button(screen_width // 2 - 60, screen_height // 2 - 21, button_img)
 
+# Oyun calisir vaziyette iken calisacak olan sonsuz dongu(Alperen Cevik)
 
 run = True
 while run:
@@ -228,7 +230,7 @@ while run:
 
 
 
-	#difficulty adjustment
+	#Zorluk ayari()
 	if score == 7:
 		scroll_speed = 4.5
 		pipe_gap = 240
@@ -273,10 +275,10 @@ while run:
 		pipe_frequency = 800
 		
 	
-	#look for collision
+	#Carpma kontrolunun yapilmasi(Alperen Cevik)
 	if pygame.sprite.groupcollide(bird_group, pipe_group, False, False) or flappy.rect.top < 0:
 		game_over = True
-	#once the bird has hit the ground it's game over and no longer flying
+	#kus yere degdiginde gameover yapan satir(Alperen)
 	if flappy.rect.bottom >= 768:
 		game_over = True
 		flying = False
@@ -285,7 +287,7 @@ while run:
 
 
 	if flying == True and game_over == False:
-		#generate new pipes
+		#yeni borular olusturan satir(Alperen Cevik)
 		time_now = pygame.time.get_ticks()
 		if time_now - last_pipe > pipe_frequency:
 			pipe_height = random.randint(-100, 100)
@@ -294,7 +296,7 @@ while run:
 			pipe_group.add(btm_pipe)
 			pipe_group.add(top_pipe)
 			last_pipe = time_now
-
+	#Update ile guncellenmesini saglar(bu komut olmadigi zaman hareket olmuyor)(Alperen Cevik)
 		pipe_group.update()
 
 		ground_scroll -= scroll_speed
@@ -302,7 +304,8 @@ while run:
 			ground_scroll = 0
 	
 
-	#check for game over and reset
+	# oyunun bitip bitmedigini kontrol eden eger yandiysak menu cikaran (Alperen Cevik)
+	# ve degerleri(skoru) hesaplayan ve sonra reset atmamizi saglayan komutlar
 	if game_over == True:
 
 		#highest score check
@@ -350,7 +353,7 @@ while run:
 
 pygame.quit()
 
-#highest score assignment save backup for power loss!
+#yuksek skoru ani elektrik kesintisi, hata durumlarinda kayit altina alinmasini saglayan satir(Alperen Cevik)
 if high_score < score:
 	savefile = open('saves/data.txt','r+')
 	high_score = score
