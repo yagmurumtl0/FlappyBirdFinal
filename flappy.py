@@ -9,8 +9,8 @@ pygame.mixer.init()
 clock = pygame.time.Clock()
 fps = 60
 # pencere boyutunun piksel olarak belirlenmesi (yagmur umutlu)
-screen_width = 864
-screen_height = 936
+screen_width = 864 
+screen_height = 936 #yuksekligini tanimlama (yagmur umutlu)
 # girilen piksellerin pencereye tanimlanmasi ve pencerenin isminin atanmasi (yagmur umutlu)
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption('Flappy Bird by Alperen,Yagmur, Emre')
@@ -31,7 +31,7 @@ gray = (119, 136, 153)
 flying = False
 game_over = False
 score = 0 #baslangictaki skorun tanimlanmasi(Alperencevik)
-death_count = 0
+death_count = 0 #olum sayisinin baslangic degerinin atanmasi (yagmur umutlu)
 death_count_text = "Death Count:" #olme sayisi(alperen cevik)
 score_text = "Score :" #anlik skor(Alperen)
 best_text = "Best :" #yapilan en iyi skor(Alperen)
